@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}
+        <title>Formulario pedidos</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="{% static 'index_style.css' %}">
+
+        <link href="https://fonts.cdnfonts.com/css/ms-reference-sans-serif" rel="stylesheet">
+
+    </head>
+    <body>
+        <header class="login">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                {% endif %}
+        </header>
+        <div class="main_index_menu">
+            <img  src="{% static 'logo.png' %}" alt="My Image" class="titulo_imagen">
+            <a href="https://www.ankerplex.eu" class="titulo">Bienvenido al administrador de pedidos de Ankerplex</a>
+
+            <div class="menu_item" id="datos_generales">
+                <a id="a_datos_generales" href="/datos-generales"> Ir al formulario de datos generales</a>
+            </div>
+
+            <div class="menu_item"id="clientes">
+                <a href="/clientes"> Ir al formulario de clientes</a>
+            </div>
+            <div class="menu_item"id="productos">
+                <a href="/productos"> Ir al formulario de productos</a>
+            </div>
+            <div class="menu_item"id="pedidos">
+                <a href="/pedidos/?id_cliente=todos">Ir al formulario de pedidos</a>
+            </div>
+            <div class="menu_item"id="facturas">
+                <a href="/facturas/?id_cliente=todos"> Ir al formulario de facturas</a>
+            </div>
+            <div class="menu_item"id="albaranes">
+                <a href="/albaranes/?id_cliente=todos"> Ir al formulario de albaranes</a>
+            </div>
+        
+            
+            
+
+
+        </div>
+
+    </body>

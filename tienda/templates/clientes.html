@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Visualizacion clientes
+{% endblock %}
+
+{% block content %}
+<h2 class="titulo_seccion_global">Clientes
+</h2>
+
+
+<div class="tab-container_datos_clientes">
+
+    <button id="boton_1_clientes" class="tab-btn active" onclick="openTab(event, 'tab1')">TIPO DE CLIENTES</button>
+    <button id="boton_2_clientes" class="tab-btn" onclick="openTab(event, 'tab2')">CLIENTES</button>
+
+    <div id="tab1" class="tab-content active">    
+
+        {% if user.is_authenticated %}
+        <div id="container_form_tipo_clientes" class="elemento_form_clientes">
+                <form method="POST" class="form_data">
+                    {% csrf_token %}
+                    {{ form_tipo_clientes.as_p }}
+                    <button type="submit"> Aceptar</button>
+                </form>
+        </div>
+        {% endif %}
+
+        <table id="tipo_clientes" class="display">
+            <thead>
+                <tr>
+                    
+                    <th>id</th>
+                    <th>tipo_cliente</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in tipo_clientes %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.tipo_cliente }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="tab2" class="tab-content">
+
+        {% if user.is_authenticated %}
+        <div class="elemento_form_clientes">
+            <form method="POST" class="form_in_2_cols" id="formulario_introducir_clientes">
+                {% csrf_token %}
+                <div class="two-column-form">
+                    <div class="column">
+                        <div class="form-group">
+                            {{ form_clientes.cliente.label_tag }}
+                            {{ form_clientes.cliente }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_clientes.pais.label_tag }}
+                            {{ form_clientes.pais }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_clientes.tipo_cliente.label_tag }}
+                            {{ form_clientes.tipo_cliente }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_clientes.cif_vat.label_tag }}
+                            {{ form_clientes.cif_vat }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form_clientes.otros_datos1.label_tag }}
+                            {{ form_clientes.otros_datos1 }}
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="form-group">
+                            {{ form_clientes.direccion_calle_numero.label_tag }}
+                            {{ form_clientes.direccion_calle_numero }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_clientes.direccion_piso.label_tag }}
+                            {{ form_clientes.direccion_piso }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_clientes.direccion_localidad.label_tag }}
+                            {{ form_clientes.direccion_localidad }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_clientes.direccion_cp.label_tag }}
+                            {{ form_clientes.direccion_cp }}
+                        </div>
+                    </div>
+            <!--{{ form_clientes.as_table }}-->
+                <button type="submit" class="submit_2cols_form"> Aceptar</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <table id="clientes_tabla" class="display">
+            <thead>
+                <tr>
+                    
+                    <th>identificador</th>
+                    <th>cliente</th>
+                    <th>pais_id</th>
+                    <th>tipo_cliente</th>
+                    <th>direccion_calle_numero</th>
+                    <th>cif_vat</th>
+                    <th>fecha_creacion</th>
+                    <th>otros_datos1</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in clientes %}
+                <tr>
+                    <td>{{ item.identificador }}</td>
+                    <td>{{ item.cliente }}</td>
+                    <td>{{ item.pais_id }}</td>
+                    <td>{{ item.tipo_cliente }}</td>
+                    <td>{{ item.direccion_calle_numero }}</td>
+                    <td>{{ item.cif_vat }}</td>
+                    <td>{{ item.fecha_creacion }}</td>
+                    <td>{{ item.otros_datos1 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+    
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function() {
+            var table = $('#tipo_clientes').DataTable();
+        });
+        </script>   
+        <script>
+            $(document).ready(function() {
+            var table = $('#clientes_tabla').DataTable();
+        });
+        </script>   
+        <script>
+            function openTab(evt, tabName) {
+                var i, tabContent, tabButtons;
+              
+                tabContent = document.getElementsByClassName("tab-content");
+                for (i = 0; i < tabContent.length; i++) {
+                  tabContent[i].style.display = "none";
+                }
+              
+                tabButtons = document.getElementsByClassName("tab-btn");
+                for (i = 0; i < tabButtons.length; i++) {
+                  tabButtons[i].classList.remove("active");
+                }
+              
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.classList.add("active");
+              }
+        </script>
+
+        {% endblock %}

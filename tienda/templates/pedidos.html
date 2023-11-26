@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Visualizacion pedidos
+{% endblock %}
+
+{% block content %}
+
+
+    
+    <h2 class="titulo_seccion_global">Pedidos - {% if cliente_name == "todos" %} 
+            Todos los clientes
+            {% else %} 
+            {{ cliente_name }}
+            {% endif %}
+    </h2>
+
+
+    <section class="formulario_general">
+
+        <article class="cambiar_cliente">
+            <h1 id="titulo_cambiar_cliente" class="titulo_seccion">Cambiar cliente  </h1>
+            <form id="form_cambiar_cliente" action="{% url 'entrada_pedidos' %}" method="GET" class="form_data">
+                <input type="text" name="id_cliente" placeholder="Inserta ID de cliente">
+                <button type="submit">Ir a pedidos</button>
+               
+            </form>
+            <div id="aviso_cliente_no_existe" data-variable="{{ launch_js_cliente_no_existe }}" class="aviso_cliente_no_existe">
+                El cliente no existe
+            </div>
+        </article>
+
+        {% if user.is_authenticated %}
+        <article class="cliente_formulario_general">
+            <h1 id="h1_titulo_form_pedido" class="titulo_seccion">Formulario pedidos</h1>
+            <form method="POST" class="form_data">
+                {% csrf_token %}
+                {{ form_pedidos.as_p }}
+                <button type="submit"> Aceptar</button>
+            </form>
+        </article>
+
+        {% endif %} 
+        
+    
+        {% if user.is_authenticated %}
+        <article class="cerrar_pedido">
+            <h1 id="h1_titulo_cerrar_pedido" class="titulo_seccion"> Cerrar pedido</h1>
+            <form id="formulario_cerrar_pedido" method="POST" class="form_data">
+                {% csrf_token %}
+                {{ form_cerrar_pedidos.as_p }}
+                <button type="submit"> Cerrar</button>
+            </form>
+        </article>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <article class="reabrir_pedido">
+            <h1 id="h1_titulo_abrir_pedido" class="titulo_seccion"> Reabrir pedido</h1>
+            <form id="formulario_abrir_pedido" method="POST" class="form_data">
+                {% csrf_token %}
+                {{ form_reabrir_pedidos.as_p }}
+                <button type="submit"> Reabrir</button>
+            </form>
+        </article>
+    
+        {% endif %}
+
+    </section>
+
+
+
+
+
+
+
+
+    <section class="lineas_form">
+        
+        <div>
+            {% if todos_los_clientes != "yes" %}
+            {% if user.is_authenticated %}
+            
+            <h1 id="h1_titulo_form_lineas_pedidos" class="titulo_seccion">Formulario lineas de pedidos</h1>
+            <form id="form_lineas_pedidos" method="POST" class="form_data">
+                {% csrf_token %}
+                {{ form_lineas_pedidos.management_form }}
+                <table>
+                    <thead>
+                        <tr>
+                            <th> Pedido</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for form in form_lineas_pedidos %}
+                            <tr>
+                                <td>{{ form.num_pedido}}</td>
+                                <td>{{ form.codigo_articulo}}</td>
+                                <td>{{ form.cantidad}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>   
+                <button type="submit"> Aceptar</button>
+            </form>  
+            {% endif %}       
+               
+    
+        </div>
+
+        <div>
+            {% if user.is_authenticated %}
+
+            <h1 id="h1_titulo_form_eliminar_lineas_pedidos" class="titulo_seccion">Eliminar pedidos lineas</h1>
+            <form method="post" class="form_data">
+                {% csrf_token %}
+                {{ form_eliminar_lineas_pedidos.as_p  }}
+                <button type="submit"> Eliminar linea pedidos</button>
+            </form>
+    
+            {% endif %} 
+            {% endif %} 
+        </div>
+
+
+    </section>
+    <div class="tab-container_datos_clientes">
+        <button id="boton_1_clientes" class="tab-btn active" onclick="openTab(event, 'tab1')">PEDIDOS</button>
+        <button id="boton_2_clientes" class="tab-btn" onclick="openTab(event, 'tab2')">LINEAS DE PEDIDOS</button>
+        <div id="tab1" class="tab-content active">    
+            <table id="pedidos_tabla" class="display">
+                <thead>
+                    <tr>
+                        
+                        <th>num_pedido</th>
+                        <th>fecha</th>
+                        <th>cliente</th>
+                        <th>id_cliente</th>
+                        <th>tipo_cliente</th>
+                        <th>precio_total</th>
+                        <th>cerrado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in pedidos %}
+                    <tr>
+                        <td>{{ item.num_pedido }}</td>
+                        <td>{{ item.fecha }}</td>
+                        <td>{{ item.cliente }}</td>
+                        <td>{{ item.id_cliente }}</td>
+                        <td>{{ item.tipo_cliente }}</td>
+                        <td>{{ item.precio_total }}</td>
+                        <td>
+                             {% if item.cerrado  %}
+                                Cerrado
+                            {% elif not item.cerrado  %}
+                                Abierto
+                            {% endif %}
+  
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="tab2" class="tab-content">
+
+
+            <table id="pedidos-lin-table" class="display">
+                <thead>
+                    <tr>
+                        <th>identificador</th>
+                        <th>num_pedido</th>
+                        <th>fecha</th>
+                        <th>cliente</th>
+                        <th>tipo_cliente</th>
+                        <th>cantidad</th>
+                        <th>codigo_articulo</th>
+                        <th>precio_unitario</th>
+                        <th>precio_total_linea</th>
+                        <th>precio_total_pedido</th>
+                        <th>cantidad_facturada</th>
+                        <th>cantidad_servida</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in pedidos_lin_data %}
+                    <tr>
+                        <td>{{ item.identificador }}</td>
+                        <td>{{ item.num_pedido }}</td>
+                        <td>{{ item.fecha }}</td>
+                        <td>{{ item.cliente }}</td>
+                        <td>{{ item.tipo_cliente }}</td>
+                        <td>{{ item.cantidad }}</td>
+                        <td>{{ item.codigo_articulo }}</td>
+                        <td>{{ item.precio_unitario }}</td>
+                        <td>{{ item.precio_total_linea }}</td>
+                        <td>{{ item.precio_total_pedido }}</td>
+                        <td>{{ item.cantidad_facturada }}</td>
+                        <td>{{ item.cantidad_servida }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+        <script>
+            var myDiv = document.getElementById('aviso_cliente_no_existe');
+            var variableValue = myDiv.getAttribute('data-variable');
+            if (variableValue === 'si') {
+                myDiv.classList.add('mostrar_aviso_cliente');
+            }
+        </script>
+         <!-- <script>
+           window.addEventListener('DOMContentLoaded', (event) => {
+                // Update the class of the div if condition is true
+                if ({% if launch_js_cliente_no_existe == 'si' %}true{% else %}false{% endif %}) {
+                    document.getElementById('aviso_cliente_no_existe').classList.add('mostrar_aviso_cliente');
+                }
+            });
+        </script>-->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function() {
+            var table = $('#pedidos_tabla').DataTable();
+        });
+        </script>   
+        <script>
+            $(document).ready(function() {
+            var table = $('#pedidos-lin-table').DataTable();
+        });
+        </script>   
+        <script>
+            function openTab(evt, tabName) {
+                var i, tabContent, tabButtons;
+              
+                tabContent = document.getElementsByClassName("tab-content");
+                for (i = 0; i < tabContent.length; i++) {
+                  tabContent[i].style.display = "none";
+                }
+              
+                tabButtons = document.getElementsByClassName("tab-btn");
+                for (i = 0; i < tabButtons.length; i++) {
+                  tabButtons[i].classList.remove("active");
+                }
+              
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.classList.add("active");
+              }
+        </script>
+
+        {% endblock %}

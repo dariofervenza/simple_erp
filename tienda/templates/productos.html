@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Visualizacion productos
+{% endblock %}
+
+{% block content %}
+<h2 class="titulo_seccion_global">Productos
+</h2>
+
+    {% if user.is_authenticated %}
+        <form method="POST" class="form_data">
+            {% csrf_token %}
+            <div class="two-column-form">
+                <div class="column">
+                    <div class="form-group">
+                        {{ form_productos.codigo_articulo.label_tag }}
+                        {{ form_productos.codigo_articulo }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_productos.descripcion.label_tag }}
+                        {{ form_productos.descripcion }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_productos.precioTipo1.label_tag }}
+                        {{ form_productos.precioTipo1 }}
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="form-group">
+                        {{ form_productos.precioTipo2.label_tag }}
+                        {{ form_productos.precioTipo2 }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_productos.precioTipo3.label_tag }}
+                        {{ form_productos.precioTipo3 }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_productos.peso_neto.label_tag }}
+                        {{ form_productos.peso_neto }}
+                    </div>
+
+                </div>
+
+
+            <!--{{ form_productos.as_p }}-->
+            <button type="submit" class="submit_2cols_form"> Aceptar</button>
+        </div>
+        </form>
+        {% endif %}
+        <table id="productos_tabla" class="display">
+            <thead>
+                <tr>
+                    
+                    <th>codigo_articulo</th>
+                    <th>descripcion</th>
+                    <th>precioTipo1</th>
+                    <th>precioTipo2</th>
+                    <th>precioTipo3</th>
+                    <th>peso_neto</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in productos %}
+                <tr>
+                    <td>{{ item.codigo_articulo }}</td>
+                    <td>{{ item.descripcion }}</td>
+                    <td>{{ item.precioTipo1 }}</td>
+                    <td>{{ item.precioTipo2 }}</td>
+                    <td>{{ item.precioTipo3 }}</td>
+                    <td>{{ item.peso_neto }}</td>
+
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function() {
+            var table = $('#productos_tabla').DataTable();
+        });
+        </script>   
+        {% endblock %}

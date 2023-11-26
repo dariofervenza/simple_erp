@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Visualizacion albaranes
+{% endblock %}
+
+{% block content %}
+<h2 class="titulo_seccion_global">Albaranes - {% if cliente_name == "todos" %} 
+    Todos los clientes
+    {% else %} 
+    {{ cliente_name }}
+    {% endif %}
+</h2>
+<section class="formulario_general">
+    <article class="cambiar_cliente">
+            <h1 id="titulo_cambiar_cliente" class="titulo_seccion">Cambiar cliente</h1>
+            <form action="{% url 'entrada_albaranes' %}" method="GET" class="form_data">
+                <input type="text" name="id_cliente" placeholder="Inserta ID de cliente">
+                <button type="submit">Ir a albaranes</button>
+            </form>
+            <div id="aviso_cliente_no_existe" data-variable="{{ launch_js_cliente_no_existe }}" class="aviso_cliente_no_existe">
+                El cliente no existe
+            </div>
+        </article>
+        <article class="cliente_formulario_general">
+            {% if user.is_authenticated %}
+            <h1 id="h1_titulo_form_factura" class="titulo_seccion">Formulario albaranes</h1>
+            <form class="form_in_2_cols" method="POST" class="form_data">
+                {% csrf_token %}
+                <div class="two-column-form">
+                    <div class="column">
+                        <div class="form-group">
+                            <label> ALBARAN: </label>
+                            {{ form_albaranes.num_albaran }}
+                        </div>
+                        <div class="form-group">
+                            <label> FECHA: </label>
+                            {{ form_albaranes.fecha_albaran }}
+                        </div>
+                        <div class="form-group">
+                            <label> INCOTERMS: </label>
+                            {{ form_albaranes.incoterms }}
+                        </div>
+                        <div class="form-group">
+                            <label> MEDIDAS: </label>
+                            {{ form_albaranes.medidas }}
+                        </div>
+
+                    </div>
+                    <div class="column">
+                        <div class="form-group">
+                            <label> CLIENTE: </label>
+                            {{ form_albaranes.cliente }}
+                        </div>
+                        <div class="form-group">
+                            <label> TRANSPORTISTA: </label>
+                            {{ form_albaranes.transportista }}
+                        </div>
+                        <div class="form-group">
+                            <label> BULTOS: </label>
+                            {{ form_albaranes.bultos }}
+                        </div>
+                    </div>
+                   <!--{{ form_albaranes.as_p }}-->  
+
+                </div>
+                
+                <button type="submit" class="submit_2cols_form"> Aceptar</button>
+            </form>  
+        </article>
+            {% endif %}  
+            {% if user.is_authenticated %}
+            <article class="cerrar_pedido">
+                <h1 id="h1_titulo_cerrar_pedido" class="titulo_seccion"> Cerrar albaran</h1>
+                <form method="POST" class="form_data">
+                    {% csrf_token %}
+                    {{ form_cerrar_albaranes.as_p }}
+                    <button type="submit"> Cerrar</button>
+                </form>
+        </article>
+             {% endif %}
+    </section>
+
+    <div class="tab-container_datos_clientes">
+        <button id="boton_1_clientes" class="tab-btn active" onclick="openTab(event, 'tab1')">ALBARANES</button>
+        <button id="boton_2_clientes" class="tab-btn" onclick="openTab(event, 'tab2')">LINEAS DE ALBARANES</button>
+        <div id="tab1" class="tab-content active">    
+
+
+        <table id="albaranes_tabla" class="display">
+            <thead>
+                <tr>
+                    <th>fecha_albaran</th>
+                    <th>cliente</th>
+                    <th>id_cliente</th>
+                    <th>num_albaran</th>
+                    <th>pais</th>
+                    <th>num_pedidos_incluidos</th>
+                    <th>transportista_id</th>
+                    <th>incoterms_id</th>
+                    <th>bultos</th>
+                    <th>medidas</th>
+                    <th>cerrado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in albaranes %}
+                <tr>
+                    <td>{{ item.fecha_albaran }}</td>
+                    <td>{{ item.cliente }}</td>
+                    <td>{{ item.id_cliente }}</td>
+                    <td>{{ item.num_albaran }}</td>
+                    <td>{{ item.pais }}</td>
+                    <td>{{ item.num_pedidos_incluidos }}</td>
+                    <td>{{ item.transportista_id }}</td>
+                    <td>{{ item.incoterms_id }}</td>
+                    <td>{{ item.bultos }}</td>
+                    <td>{{ item.medidas }}</td>
+                    <td>
+                        {% if item.cerrado  %}
+                        Cerrado
+                    {% elif not item.cerrado  %}
+                        Abierto
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        <div id="tab2" class="tab-content">
+
+        <table id="albaranes_lineas" class="display">
+            <thead>
+                <tr>
+                    <th>identificador</th>
+                    <th>cliente</th>
+                    <th>num_pedido_id</th>
+                    <th>num_albaran_id</th>
+                    <th>codigo_articulo</th>
+                    <th>cantidad_servida</th>
+                    <th>cantidad_total</th>
+                    <th>peso_neto_unidad</th>
+            
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in albaranes_lineas %}
+                <tr>
+                    <td>{{ item.identificador }}</td>
+                    <td>{{ item.cliente }}</td>
+                    <td>{{ item.num_pedido_id }}</td>
+                    <td>{{ item.num_albaran_id }}</td>
+                    <td>{{ item.codigo_articulo }}</td>
+                    <td>{{ item.cantidad_servida }}</td>
+                    <td>{{ item.cantidad_total }}</td>
+                    <td>{{ item.peso_neto }}</td>
+            
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    </div>
+
+
+<section class="lineas_form">
+    <div>
+
+        {% if user.is_authenticated %}
+        {% if todos_los_clientes != "yes" %}
+
+
+        <h1 class="titulo_seccion">Formulario servir lineas</h1>
+
+
+        <form method="POST" class="form_data">
+        {% csrf_token %}
+        {% for field in form_albaranes_lineas %}
+        {% if field.label == "Numero de albaran: " %}
+        <label>{{ field.label }} </label>{{ field }} <br/><br/><br/>
+        {% else %}
+        <label> {{ field.label }}</label> <br/><br/>
+        <label> Cantidad a servir </label>{{ field }} <br/><br/>
+        {% endif %}
+        {% endfor %}
+        <button type="submit"> Aceptar</button>
+        </form>
+        {% endif %}  
+        {% endif %}  
+    </div>
+    <div>
+        {% if user.is_authenticated %}
+        {% if todos_los_clientes != "yes" %}
+        <h1 class="titulo_seccion">Eliminar albaranes lineas</h1>
+        <form method="post" class="form_data">
+        {% csrf_token %}
+        {{ form_eliminar_lineas_albaranes.as_p  }}
+        <button type="submit"> Eliminar linea servida</button>
+        </form>
+
+        {% endif %} 
+        {% endif %} 
+    </div>
+</section>
+
+
+
+
+
+
+
+
+{% if user.is_authenticated %}
+<h1 class="titulo_seccion"> Lanzar excel albaranes</h1>
+
+
+<form action="{% url 'lanzar_albaran' %}" method="post" class="form_data">
+    {% csrf_token %}
+    <input type="text" name="num_albaran" placeholder="Inserta numero de albaran">
+    <button type="submit"> Lanzar Albaran</button>
+</form>
+{% endif %}  
+
+<script>
+var myDiv = document.getElementById('aviso_cliente_no_existe');
+var variableValue = myDiv.getAttribute('data-variable');
+if (variableValue === 'si') {
+    myDiv.classList.add('mostrar_aviso_cliente');
+}
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script>
+$(document).ready(function() {
+var table = $('#albaranes_tabla').DataTable();
+});
+</script>   
+<script>
+$(document).ready(function() {
+var table = $('#albaranes_lineas').DataTable();
+});
+</script>
+<script>
+    function openTab(evt, tabName) {
+        var i, tabContent, tabButtons;
+      
+        tabContent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+          tabContent[i].style.display = "none";
+        }
+      
+        tabButtons = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tabButtons.length; i++) {
+          tabButtons[i].classList.remove("active");
+        }
+      
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.classList.add("active");
+      }
+</script>
+
+
+
+
+
+
+{% endblock %}

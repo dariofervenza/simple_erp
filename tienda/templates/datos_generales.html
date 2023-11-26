@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+
+    {% block title %}
+        Visualizacion datos generales
+    {% endblock %}
+    {% block content %}
+
+    <h2 class="titulo_seccion_global">Datos generales 
+    </h2>
+
+    <div class_container_forms_generales class="cont_form_generales">
+        {% if user.is_authenticated %}
+        <div class="elemento_form_generales">
+            <h1 class="titulo_seccion">Formulario paises</h1>
+            <form method="POST" class="form_data">
+                {% csrf_token %}
+                {{ form_paises.as_p }}
+                <button type="submit"> Aceptar</button>
+            </form>
+        </div>
+
+        {% endif %}
+        
+        {% if user.is_authenticated %}
+        <div class="elemento_form_generales">
+            <h1 class="titulo_seccion">Formulario transportistas</h1>
+            <form method="POST" class="form_data">
+                {% csrf_token %}
+                {{ form_transportistas.as_p }}
+                <button type="submit"> Aceptar</button>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <div class="elemento_form_generales">
+        <h1 class="titulo_seccion">Formulario monedas</h1>
+        <form method="POST" class="form_data">
+            {% csrf_token %}
+            {{ form_monedas.as_p }}
+            <button type="submit"> Aceptar</button>
+        </form>
+    </div>
+    {% endif %}
+    {% if user.is_authenticated %}
+    <div class="elemento_form_generales">
+        <h1 class="titulo_seccion">Formulario incoterms</h1>
+        <form method="POST" class="form_data">
+            {% csrf_token %}
+            {{ form_incoterms.as_p }}
+            <button type="submit"> Aceptar</button>
+        </form>
+        {% endif %}
+    </div>
+    </div>
+
+
+
+
+    <div class="tab-container_datos_generales">
+        <button id="boton_1_generales" class="tab-btn active" onclick="openTab(event, 'tab1')">PAISES</button>
+        <button id="boton_2_generales" class="tab-btn" onclick="openTab(event, 'tab2')">TRANSPORTISTAS</button>
+        <button id="boton_3_generales" class="tab-btn" onclick="openTab(event, 'tab3')">MONEDAS</button>
+        <button id="boton_4_generales" class="tab-btn" onclick="openTab(event, 'tab4')">INCOTERMS</button>
+        <div id="tab1" class="tab-content active">    
+            <table id="paises" class="display">
+                <thead>
+                    <tr>
+                        
+                        <th>identificador</th>
+                        <th>pais</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in paises %}
+                    <tr>
+                        <td>{{ item.identificador }}</td>
+                        <td>{{ item.pais }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="tab2" class="tab-content">
+            <table id="transportistas" class="display">
+                <thead>
+                    <tr>
+                        
+                        <th>identificador</th>
+                        <th>nombre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in transportistas %}
+                    <tr>
+                        <td>{{ item.identificador }}</td>
+                        <td>{{ item.nombre }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="tab3" class="tab-content">
+            <table id="monedas" class="display">
+                <thead>
+                    <tr>
+                        <th>identificador</th>
+                        <th>moneda</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in monedas %}
+                    <tr>
+                        <td>{{ item.identificador }}</td>
+                        <td>{{ item.moneda }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>  
+        </div>
+        <div id="tab4" class="tab-content">
+            <table id="incoterms" class="display">
+                <thead>
+                    <tr>
+                        <th>identificador</th>
+                        <th>incoterms</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in incoterms %}
+                    <tr>
+                        <td>{{ item.identificador }}</td>
+                        <td>{{ item.incoterms }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+-->
+
+
+
+    
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function() {
+            var table = $('#paises').DataTable();
+        });
+        </script>   
+        <script>
+            $(document).ready(function() {
+            var table = $('#transportistas').DataTable();
+        });
+        </script>   
+        <script>
+            $(document).ready(function() {
+            var table = $('#monedas').DataTable();
+        });
+        </script>   
+
+        <script>
+            $(document).ready(function() {
+            var table = $('#incoterms').DataTable();
+        });
+        </script>   
+        <script>
+            function openTab(evt, tabName) {
+                var i, tabContent, tabButtons;
+              
+                tabContent = document.getElementsByClassName("tab-content");
+                for (i = 0; i < tabContent.length; i++) {
+                  tabContent[i].style.display = "none";
+                }
+              
+                tabButtons = document.getElementsByClassName("tab-btn");
+                for (i = 0; i < tabButtons.length; i++) {
+                  tabButtons[i].classList.remove("active");
+                }
+              
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.classList.add("active");
+              }
+        </script>
+
+
+        {% endblock %}

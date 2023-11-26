@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+
+{% block styles %}
+  <link rel="stylesheet" href="#">
+{% endblock %}
+
+
+
+{% block content %}
+
+<h2 class="titulo_seccion">Login</h2>
+
+  <form method="post" class="form_data">
+    {% csrf_token %}
+    {{ form.username.label }} {{ form.username }}
+    {{ form.password.label }} {{ form.password }}
+    <button type="submit">Login</button>
+  </form>
+{% endblock %}
